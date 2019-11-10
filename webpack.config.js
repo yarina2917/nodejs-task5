@@ -8,15 +8,25 @@ module.exports = {
         path: path.resolve(__dirname, './dist')
     },
     watch: true,
+    devServer: {
+        port: 8000
+    },
     module: {
         rules: [
+            {
+                test: /\.?js$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env']
+                    }
+                }
+            },
             {
                 test: /\.s[ac]ss$/i,
                 use: [{
                     loader: MiniCssExtractPlugin.loader,
-                    options: {
-                        publicPath: './styles.css'
-                    },
                 },
                     'css-loader',
                     'sass-loader'
@@ -26,7 +36,7 @@ module.exports = {
     },
     plugins: [
         new MiniCssExtractPlugin({
-            filename: "./style.css"
+            filename: "style.css"
         })
     ]
 };

@@ -19,14 +19,13 @@ class CreateSlider {
 
         this.slider.onmousedown = (e) => {
             let start = e.pageX;
-            let width = this.imagesConfig.currentId * this.imagesConfig.width;
+            let currentWidth = this.imagesConfig.currentId * this.imagesConfig.width;
             this.slider.onmousemove = (e) => {
-                this.setTransform(width + (start > e.pageX ? (start - e.pageX) : -(e.pageX - start)));
+                this.setTransform(currentWidth + (start > e.pageX ? (start - e.pageX) : -(e.pageX - start)));
             };
 
             document.onmouseup = () => {
                 let currentX = +this.slider.style.transform.replace(/\D/g, '');
-                let currentWidth = this.imagesConfig.currentId * this.imagesConfig.width;
                 if (currentX - 20 > currentWidth) {
                     this.animate(currentX, 'right')
                 } else if (currentX + 20 < currentWidth) {
