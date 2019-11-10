@@ -10,7 +10,7 @@ class CreateSlider {
             width: +document.body.clientWidth,
         };
         this.imagesConfig.widthPart = this.imagesConfig.width / 10;
-        this.setTransform(this.imagesConfig.currentId * this.imagesConfig.width);
+        this.setTransform(this.getWidth());
         this.interval = null;
     }
 
@@ -19,7 +19,7 @@ class CreateSlider {
 
         this.slider.onmousedown = (e) => {
             let start = e.pageX;
-            let currentWidth = this.imagesConfig.currentId * this.imagesConfig.width;
+            let currentWidth = this.getWidth();
             this.slider.onmousemove = (e) => {
                 this.setTransform(currentWidth + (start > e.pageX ? (start - e.pageX) : -(e.pageX - start)));
             };
@@ -44,13 +44,13 @@ class CreateSlider {
 
     animate(x, direction) {
         clearInterval(this.interval);
-        let currentX = Math.abs(x) || this.imagesConfig.width * this.imagesConfig.currentId;
+        let currentWidth = Math.abs(x) || this.getWidth();
         if (direction === 'right') {
-            let nextWidth = this.imagesConfig.width * (this.imagesConfig.currentId + 1);
+            let nextWidth = this.getWidth(this.imagesConfig.currentId + 1);
             this.interval = setInterval(() => {
-                if ((currentX + this.imagesConfig.widthPart) < nextWidth) {
-                    currentX += this.imagesConfig.widthPart;
-                    this.setTransform(currentX);
+                if ((currentWidth + this.imagesConfig.widthPart) < nextWidth) {
+                    currentWidth += this.imagesConfig.widthPart;
+                    this.setTransform(currentWidth);
                 } else {
                     this.imagesConfig.currentId = this.imagesConfig.currentId + 1 > this.imagesConfig.count ? 1 : this.imagesConfig.currentId + 1;
                     this.setTransform(this.imagesConfig.currentId === 1 ? this.imagesConfig.width : nextWidth);
@@ -58,14 +58,14 @@ class CreateSlider {
                 }
             }, 40);
         } else {
-            let nextWidth = this.imagesConfig.width * (this.imagesConfig.currentId - 1);
+            let nextWidth = this.getWidth(this.imagesConfig.currentId - 1);
             this.interval = setInterval(() => {
-                if ((currentX - this.imagesConfig.widthPart) > nextWidth) {
-                    currentX -= this.imagesConfig.widthPart;
-                    this.setTransform(currentX);
+                if ((currentWidth - this.imagesConfig.widthPart) > nextWidth) {
+                    currentWidth -= this.imagesConfig.widthPart;
+                    this.setTransform(currentWidth);
                 } else {
                     this.imagesConfig.currentId = this.imagesConfig.currentId - 1 < 1 ? this.imagesConfig.count : this.imagesConfig.currentId - 1;
-                    this.setTransform(this.imagesConfig.currentId === this.imagesConfig.count ? this.imagesConfig.width * this.imagesConfig.count : nextWidth);
+                    this.setTransform(this.imagesConfig.currentId === this.imagesConfig.count ? this.getWidth(this.imagesConfig.count) : nextWidth);
                     clearInterval(this.interval)
                 }
             }, 40);
@@ -74,6 +74,10 @@ class CreateSlider {
 
     setTransform(value) {
         this.slider.style.transform = `translateX(${-value}px)`;
+    }
+
+    getWidth(id) {
+        return this.imagesConfig.width * (isNaN(id) ? this.imagesConfig.currentId : id)
     }
 }
 
